@@ -1,3 +1,3 @@
 # PlantManager-NLW-05
 
-Aplicativo para gerenciamento de plantas feito em React Native apresentado no NLW 5 da Rocketseat.
+Aplicativo de gerenciamento de plantas feito em React Native apresentado no evento NLW 05 da Rocketseat.
