@@ -26,3 +26,6 @@ export default function App() {
     <Routes/>
   );
 }
+
+//Start server
+//json-server .\src\services\server.json --host 10.0.0.2 --port 3333 --deley 700
