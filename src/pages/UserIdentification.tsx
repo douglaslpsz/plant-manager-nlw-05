@@ -8,12 +8,14 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Platform,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import { Button } from '../components/Button';
 import { useNavigation } from '@react-navigation/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function UserIdentification() {
 
@@ -36,7 +38,14 @@ export function UserIdentification() {
     setName(value);
   }
 
-  function handleStart() {
+  async function handleSubmit() {
+
+    if(!name) {
+      return Alert.alert('Me diga qual é o seu nome para continuar.');
+    }
+    
+    await AsyncStorage.setItem('@plantmanager:user', name);//para evitar problemas, use @nomedoapp:descrição
+    
     navigation.navigate('Confirmation')
   }
 
@@ -76,7 +85,7 @@ export function UserIdentification() {
               <Button
                 disabled={!isFilled}
                 title="Confirmar"
-                onPress={handleStart}
+                onPress={handleSubmit}
               />
             </View>
           </View>
