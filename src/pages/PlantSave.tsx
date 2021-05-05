@@ -5,14 +5,14 @@ import {
   Text,
   View,
   Image,
-  ScrollView,
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { useRoute } from '@react-navigation/core';
 import DateTimerPicker, { Event } from '@react-native-community/datetimepicker';
-import { PlantProps } from '../libs/storage';
+import { PlantProps, savePlant, loadPlant } from '../libs/storage';
 import {SvgFromUri} from 'react-native-svg';
 import waterdrop from '../assets/waterdrop.png';
 import { Button } from '../components/Button';
@@ -26,10 +26,10 @@ interface Params {
 
 export function PlantSave() {
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(Platform.OS == 'ios');
-  
+  const [showDatePicker, setShowDatePicker] = useState(Platform.OS == 'ios');  
   const route = useRoute();
   const { plant } = route.params as Params;
+  const navigation = useNavigation();
 
   function handleChangeTime(event: Event, dateTime: Date | undefined) {
     if(Platform.OS === 'android') {
@@ -47,6 +47,32 @@ export function PlantSave() {
 
   function handleOpenDatetimePickerForAndroid() {
     setShowDatePicker(oldState => !oldState);
+  }
+
+  async function handleSave() {
+
+    /*const f = await loadPlant();
+    console.log(f);*/
+
+    try{
+
+      await savePlant({
+        ...plant,
+        dateTimeNotification: selectedDateTime
+      });
+
+      navigation.navigate('Confirmation', {
+        title: 'Tudo certo!',
+        subtitle: 'Fique tranquilo que vamos sempre lembrar você de cuidar da sua plantinha com muito cuidado.',
+        buttonTitle: 'Muito Obrigado :D',
+        icon: 'hug',
+        nextScreen: 'MyPlants'
+      })
+
+    }catch {
+      Alert.alert('Erro ao salvar.');
+    }
+
   }
 
   return (
@@ -107,7 +133,7 @@ export function PlantSave() {
 
         <Button
           title="Cadastrar planta"
-          onPress={ () => {} }
+          onPress={handleSave}
         />
 
       </View>
