@@ -4,7 +4,8 @@ import {
   View,
   Text,
   Image,
-  FlatList
+  FlatList,
+  ScrollView
 } from 'react-native';
 import colors from '../styles/colors';
 import { Header } from '../components/Header';
@@ -66,15 +67,19 @@ export function MyPlants() {
         <Text style={styles.plantsTitle}>
           Próximas regadas
         </Text>
-        <FlatList
-          data={myPlants}
-          keyExtractor={ (item) => String(item.id)}
-          renderItem={({ item }) => (
-            <PlantCardSecondary data={item} />
-          )}
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flex: 1 }}
-        />
+        >
+          <FlatList
+            data={myPlants}
+            keyExtractor={ (item) => String(item.id)}
+            renderItem={({ item }) => (
+              <PlantCardSecondary data={item} />
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flex: 1 }}
+          />
+        </ScrollView>
       </View>
     </View>
   )
