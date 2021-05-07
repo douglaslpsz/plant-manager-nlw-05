@@ -23,6 +23,7 @@ export function MyPlants() {
 
   const [myPlants, setMyPlants] = useState<PlantProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const [empty, setEmpty] = useState(true);
   const [nextWatered, setNextWatered] = useState<string>();
 
   function handleRemove(plant: PlantProps) {
@@ -54,15 +55,18 @@ export function MyPlants() {
     async function loadStorageData() {
       const plantsStoraged = await loadPlant();
 
-      const nextTime = formatDistance(
-        new Date(plantsStoraged[0].dateTimeNotification).getTime(),
-        new Date().getTime(),
-        { locale: pt }
-      );
-
-      setNextWatered(
-        `Não esqueça de regar a ${plantsStoraged[0].name} à ${nextTime} horas`
-      );
+      if(plantsStoraged.length > 0) {
+        const nextTime = formatDistance(
+          new Date(plantsStoraged[0].dateTimeNotification).getTime(),
+          new Date().getTime(),
+          { locale: pt }
+        );
+  
+        setNextWatered(
+          `Não esqueça de regar a ${plantsStoraged[0].name} em ${nextTime}`
+        );
+        setEmpty(false);
+      }
 
       setMyPlants(plantsStoraged);
       setLoading(false);
@@ -78,39 +82,45 @@ export function MyPlants() {
   return (
     <View style={styles.container}>
       <Header/>
-      <View style={styles.spotlight}>
-        <Image
-          style={styles.spotlightImage}
-          source={waterdrop}
-        />
-        <Text style={styles.spotlightText}>
-          {nextWatered}
-        </Text>
-      </View>
+        {!empty ? (
+            <>
+              <View style={styles.spotlight}>
+                <Image
+                  style={styles.spotlightImage}
+                  source={waterdrop}
+                />
+                <Text style={styles.spotlightText}>
+                  {nextWatered}
+                </Text>
+              </View>
 
-      <View style={styles.plants}>
-        <Text style={styles.plantsTitle}>
-          Próximas regadas
-        </Text>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-        >
-          <FlatList
-            data={myPlants}
-            keyExtractor={ (item) => String(item.id)}
-            renderItem={({ item }) => (
-              <PlantCardSecondary 
-                handleRemove={
-                  () => {handleRemove(item)}
-                }
-                data={item} 
-              />
-            )}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flex: 1 }}
-          />
-        </ScrollView>
-      </View>
+              <View style={styles.plants}>
+                <Text style={styles.plantsTitle}>
+                  Próximas regadas
+                </Text>
+                <FlatList
+                    data={myPlants}
+                    keyExtractor={ (item) => String(item.id)}
+                    renderItem={({ item }) => (
+                      <PlantCardSecondary 
+                        handleRemove={
+                          () => {handleRemove(item)}
+                        }
+                        data={item} 
+                      />
+                    )}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ flex: 1 }}
+                  />
+              </View>
+            </>
+          ) : 
+          (
+            <Text style={styles.noContent}>Nenhum agendamento criado!</Text>
+          )
+        }
+      
+      
     </View>
   )
 }
@@ -151,5 +161,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.heading,
     color: colors.heading,
     marginVertical:20
+  },
+  noContent: {
+    fontSize: 24,
+    fontFamily: fonts.heading,
+    color: colors.heading,
+    marginVertical: 250
   }
 });
