@@ -24,7 +24,7 @@ export function Header() {
     }
 
     loadUserName();
-  }, [userName])
+  }, [userName]);
 
   return (
     <View style={styles.container}>
