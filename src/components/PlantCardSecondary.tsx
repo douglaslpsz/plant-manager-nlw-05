@@ -13,7 +13,7 @@ interface PlantProps extends RectButtonProps {
     photo: string;
     hour: string
   };
-  handleRemove: () => VoidFunction;
+  handleRemove: () => void;
 }
 
 export const PlantCardSecondary = ({ data, handleRemove,...rest } : PlantProps) => {
